@@ -1,75 +1,84 @@
-#!/usr/bin/env python
 import jsonpickle
-import textwrap
-import random
 import time
 import sys
 import os
 
-
-#Variables
-
-
-SAVEGAME_FILENAME = 'savegame.json'
-
+# Variables
+SAVE_GAME_FILENAME = 'savegame.json'
 game_state = dict()
 
 
-### Classes ###
-
+# Classes
 class Human(object):
-#Represents the human player in the game
+    """
+    Represents the human player in the game.
+    """
+
     def __init__(self, name, health, strength, gold):
         self.name = name
         self.health = health
         self.strength = strength
         self.gold = gold
 
+
 class AI(object):
-#Represents the enemy player in the game
+    """
+    Represents the enemy player in the game
+    """
+
     def __init__(self, name, health, strength):
         self.name = name
         self.health = health
         self.strength = strength
 
 
-class creature(object):
-#Represents the enemy player in the game
-    def __init__(self, type, name, health, strength, weakness):
+class Creature(object):
+    """
+    Represents the enemy player in the game
+    """
+
+    def __init__(self, name, health, strength):
         self.name = name
         self.health = health
         self.strength = strength
 
 
 class Items:
+    """
+    Represents the items in the game.
+    """
+
     def __init__(self, name, info, weight):
         self.name = name
         self.info = info
         self.weight = weight
 
-###end classess###
 
-###functions for loading, saving, and initializing the game###
+# end classes
+
+# functions for loading, saving, and initializing the game
 def load_game():
-    """Load game state from a predefined savegame location and return the
-    game state contained in that savegame.
     """
-    with open(SAVEGAME_FILENAME, 'r') as savegame:
-        state = jsonpickle.decode(savegame.read())
+    Load game state from a predefined saved game location and return the
+    game state contained in that saved game.
+    """
+    with open(SAVE_GAME_FILENAME, 'r') as saved_game:
+        state = jsonpickle.decode(saved_game.read())
     return state
 
 
 def save_game():
-    """Save the current game state to a savegame in a predefined location.
+    """
+    Save the current game state to a saved game in a predefined location.
     """
     global game_state
-    with open(SAVEGAME_FILENAME, 'w') as savegame:
-        savegame.write(jsonpickle.encode(game_state))
+    with open(SAVE_GAME_FILENAME, 'w') as saved_game:
+        saved_game.write(jsonpickle.encode(game_state))
 
 
 def init_game():
-    """If no savegame exists, initialize the game state with some
-    default values.
+    """
+    If no saved game exists, initialize the game state with some default values.
     """
     global game_state
     player = Human('Fred', 100, 10, 1000)
@@ -80,34 +89,41 @@ def init_game():
     state['npcs'] = [enemy]
     return state
 
-###End functions for loading, saving, and initalizing the game###
+
+# End functions for loading, saving, and initializing the game
+
+"""
+Commands = {
+  'quit': Player.quit,
+  'help': Player.help,
+  'status': Player.status,
+  'rest': Player.rest,
+  'examine': Player.examine,
+  'attack': Player.attack,
+  }
+"""
 
 
-# Commands = {
-#   'quit': Player.quit,
-#   'help': Player.help,
-#   'status': Player.status,
-#   'rest': Player.rest,
-#   'examine': Player.examine,
-#   'attack': Player.attack,
-#   }
-
-
-def _clear():#clear screen function
+def _clear():
+    """
+    clear screen function
+    """
     os.system('cls' if os.name == 'nt' else 'clear')
 
-#The main game loop
-def Game_Loop():
 
+def game_loop():
+    """
+    The main game loop
+    """
     global game_state
 
     while True:
         _clear()
         time.sleep(0.2)
-        print("/:::::::::::::::::::::::::::::::::::::::\ ")
-        print("::::::  Welcome To Life or Death  ::::::| ")
-        print("::::::::::::::  The Game  ::::::::::::::|" )
-        print("\:::::::::::::::::::::::::::::::::::::::/ ")
+        print("/:::::::::::::::::::::::::::::::::::::::\\ ")
+        print("|::::::  Welcome To Life or Death  ::::::| ")
+        print("|::::::::::::::  The Game  ::::::::::::::|")
+        print("\\:::::::::::::::::::::::::::::::::::::::/ ")
         print("")
         print("  |(1) New Game\n  |(2) Load Save\n  |(3) Help For Dummies\n  |(4) RAGE QUIT\n ")
         time.sleep(1.0)
@@ -115,10 +131,10 @@ def Game_Loop():
             selection = int(input(">>> "))
         except ValueError:
             print()
-            print("You can only use numbers 1, 2, 3, or 4.")
-            print()
+            print("You can only use numbers 1, 2, 3, or 4.\n")
+            selection = 0
             _clear()
-            Game_Loop()
+            game_loop()
         if selection == 1:
             _clear()
             init_game()
@@ -132,11 +148,13 @@ def Game_Loop():
             _clear()
             rage_quit()
         else:
-            Game_Loop()
+            game_loop()
 
 
 def help_menu():
-    "Help Menu"
+    """
+    Help Menu
+    """
     _clear()
     print("""
                                   /~~~~~~~~~~~~~~~~~~~|
@@ -165,7 +183,7 @@ def help_menu():
     time.sleep(0.5)
     option = input('                                  --> ')
     if option == '1':
-        main_menu()
+        main()
     elif option == '2':
         hints()
     else:
@@ -173,7 +191,9 @@ def help_menu():
 
 
 def rage_quit():
-    "Quit Sequence"
+    """
+    Quit Sequence
+    """
     _clear()
     time.sleep(0.4)
     print("""
@@ -270,7 +290,6 @@ def rage_quit():
                             |  E M E R G E N C Y     S H U T D O W N  |
                                         | I M M I N E N T |
                             ###########################################
-
                                  [                                ]
                                                  0%
 """)
@@ -282,7 +301,6 @@ def rage_quit():
                             |  E M E R G E N C Y     S H U T D O W N  |
                                         | I M M I N E N T |
                             ###########################################
-
                                  [▆▆▆                             ]
                                                  5%
 """)
@@ -294,7 +312,6 @@ def rage_quit():
                             |  E M E R G E N C Y     S H U T D O W N  |
                                         | I M M I N E N T |
                             ###########################################
-
                                  [▆▆▆▆▆▆▆                          ]
                                                 20%
 """)
@@ -306,7 +323,6 @@ def rage_quit():
                             |  E M E R G E N C Y     S H U T D O W N  |
                                         | I M M I N E N T |
                             ###########################################
-
                                  [▆▆▆▆▆▆▆▆▆▆▆▆▆                     ]
                                                  47%
 """)
@@ -318,7 +334,6 @@ def rage_quit():
                             |  E M E R G E N C Y     S H U T D O W N  |
                                         | I M M I N E N T |
                             ###########################################
-
                                  [▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆             ]
                                                  68%
 """)
@@ -330,7 +345,6 @@ def rage_quit():
                             |  E M E R G E N C Y     S H U T D O W N  |
                                         | I M M I N E N T |
                             ###########################################
-
                                  [▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆ ]
                                                 99%
 """)
@@ -342,15 +356,14 @@ def rage_quit():
                             |  E M E R G E N C Y     S H U T D O W N  |
                                         | I M M I N E N T |
                             ###########################################
-
                                  [▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆]
                                                 100%
 """)
         time.sleep(2.0)
         _clear()
         print("""
-                           ▆===`~!#44 ===== ▆▆ ▆▆▆=  ==▆====▆====▆▆\^^#!~) ======▆▆▆ ▆=== ====▆▆▆▆ ===    =▆  ▆▆▆
-                           ▆▆▆ ▆▆747%*&}`67$^#% ▆▆▆▆▆▆  ▆E  R  R  O▆ R▆▆▆  4   0▆  4▆▆▆ ▆\   ▆▆▆ ▆▆455563dll▆▆
+                           ▆===`~!#44 ===== ▆▆ ▆▆▆=  ==▆====▆====▆▆/^^#!~) ======▆▆▆ ▆=== ====▆▆▆▆ ===    =▆  ▆▆▆
+                           ▆▆▆ ▆▆747%*&}`67$^#% ▆▆▆▆▆▆  ▆E  R  R  O▆ R▆▆▆  4   0▆  4▆▆▆ ▆/   ▆▆▆ ▆▆455563dll▆▆
                                ▆▆▆  =   ▆▆▆ ▆     @@#   R%$%   ▆▆ ▆= ▆▆▆▆      ▆▆▆▆▆▆▆  ▆    ▆▆▆▆  ▆!!46i58i4▆▆▆
                             ▆▆  7t7r6t%^&**▆▆ S▆O C I▆A L  ▆  L I F E     N O▆T     F O▆U N D  ▆▆▆
                            =▆▆▆=▆▆▆▆=== ==▆▆=======   =====▆========= ===▆▆▆  ▆▆=====▆▆=▆▆▆▆▆  ▆▆▆▆▆▆=▆▆ ut▆▆r%^^8▆▆
@@ -360,13 +373,15 @@ def rage_quit():
         time.sleep(2.5)
         sys.exit()
     elif option == '2':
-        main_menu()
+        main()
     else:
         rage_quit()
 
 
 def hints():
-    "Extra Help Menu"
+    """
+    Extra Help Menu
+    """
     print("""
                                   /~~~~~~~~~~~~~~~~~~~~~~~~~|
                                   |        More Help        |
@@ -392,13 +407,15 @@ def hints():
                                   |~~~~~~~~~~~~~~~~~~~~~~~~/""")
     option = input('                                  --> ')
     if option == '1':
-        main_menu()
+        main()
     else:
         return
 
 
 def title_pic():
-    "Title Text Picture"
+    """
+    Title Text Picture
+    """
     _clear()
     time.sleep(1.5)
     print("""
@@ -423,36 +440,37 @@ def title_pic():
                             8|      9   | |      |   | |       |  |   |     |  |  |   |   |      |
                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~""")
     time.sleep(6.0)
-    Game_Loop()
+    game_loop()
 
 
 def start():
-    "Start story"
+    """
+    Start story
+    """
     _clear()
-    choice1 = ''
     print("gg")
 
 
-###End main game functions###
+# End main game functions
 
-###The "main" function, not to be confused with anything to do with main above it###
+# The "main" function, not to be confused with anything to do with main above it###
 def main():
-    """Main function. Check if a savegame exists, and if so, load it. Otherwise
+    """Main function. Check if a saved game exists, and if so, load it. Otherwise
     initialize the game state with defaults. Finally, start the game.
     """
     global game_state
 
-    if not os.path.isfile(SAVEGAME_FILENAME):
-        game_state = initialize_game()
+    if not os.path.isfile(SAVE_GAME_FILENAME):
+        game_state = init_game()
     else:
         game_state = load_game()
-    Game_Loop()
+    game_loop()
 
 
 if __name__ == '__main__':
     main()
 
-###end main function###
+# end main function
 
 
 title_pic()
